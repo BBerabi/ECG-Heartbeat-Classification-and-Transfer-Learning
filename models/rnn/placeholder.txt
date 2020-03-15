@@ -1,1 +1,1 @@
-
+Check with Berkay whether the code that produced the results was the RNN.py script in bberabi.leonhard/Project1/RNN.py !
