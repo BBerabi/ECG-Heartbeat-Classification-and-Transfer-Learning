@@ -13,7 +13,7 @@ import yaml
 with open("paths.yaml",'r') as f :
     paths = yaml.load(f, Loader=yaml.FullLoader)
 
-path_csv = "./models/ensemble/ensemble_ptdb.csv"
+path_csv = "./models/ensemble/ensemble2_ptdb.csv"
 path_normal = os.path.join(paths["PTDB"]["Data"], "ptbdb_normal.csv")
 path_abnormal = os.path.join(paths["PTDB"]["Data"], "ptbdb_abnormal.csv")
 
@@ -27,8 +27,9 @@ Y_test = np.array(df_test[187].values).astype(np.int8)
 X_test = np.array(df_test[list(range(187))].values)[..., np.newaxis]
 
 
-names = list(paths["PTDB"]["Models"].keys())
-paths = list(paths["PTDB"]["Models"].values())
+names = ["BRNN","CNN_LSTM","LSTM"]
+
+paths = [paths["PTDB"]["Models"][n] for n in names ] 
 print("NAMES ",names)
 print(paths)
 

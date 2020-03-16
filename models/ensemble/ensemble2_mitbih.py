@@ -12,7 +12,7 @@ import yaml
 with open("paths.yaml",'r') as f :
     paths = yaml.load(f, Loader=yaml.FullLoader)
 
-path_csv = "./models/ensemble/ensemble_mitbih.csv"
+path_csv = "./models/ensemble/ensemble2_mitbih.csv"
 path_test = os.path.join(paths["MITBIH"]["Data"], "mitbih_test.csv")
 
 
@@ -24,8 +24,9 @@ Y_test = np_utils.to_categorical(Y_test)
 X_test = np.array(df_test[list(range(187))].values)[..., np.newaxis]
 del df_test
 
-names = list(paths["MITBIH"]["Models"].keys())
-paths = list(paths["MITBIH"]["Models"].values())
+names = ["BRNN","CNN_LSTM","CNN_Res","GRU","Inception"]
+
+paths = [paths["MITBIH"]["Models"][n] for n in names ] 
 print("NAMES ",names)
 print(paths)
 
