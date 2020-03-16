@@ -15,7 +15,7 @@ Y_test = np_utils.to_categorical(Y_test)
 X_test = np.array(df_test[list(range(187))].values)[..., np.newaxis]
 del df_test
 
-
+names = 
 paths = []
 models = []
 
