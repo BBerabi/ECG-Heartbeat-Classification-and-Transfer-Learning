@@ -1,9 +1,8 @@
 import numpy as np
 from numpy.random import seed
 seed(1)
-import tensorflow
-from tensorflow import set_random_seed
-set_random_seed(2)
+import tensorflow as tf
+tf.random.set_seed(2)
 
 
 import pandas as pd
@@ -32,8 +31,8 @@ X_test = np.array(df_test[list(range(187))].values)[..., np.newaxis]
 
 X = np.reshape(X, (len(X), 187, 1))
 
-weights = class_weight.compute_class_weight('balanced', np.unique(Y), Y)
-weights = dict(zip(list(range(5)), weights))
+#weights = class_weight.compute_class_weight('balanced', np.unique(Y), Y)
+#weights = dict(zip(list(range(5)), weights))
 
 print(weights)
 Y = np_utils.to_categorical(Y)
@@ -73,7 +72,7 @@ reduce_lr = ReduceLROnPlateau(monitor='val_acc', factor=0.2, patience=3, verbose
 
 model.compile(loss='categorical_crossentropy', optimizer=opt, metrics=['acc'])
 model.fit(X, Y, epochs=100, batch_size=64, callbacks=[check, early, reduce_lr],
-          validation_split=0.1, class_weight=weights)
+          validation_split=0.1)
 
 predictions = model.predict(X_test)
 print(X_test.shape)

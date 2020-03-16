@@ -3,9 +3,8 @@ from numpy.random import seed
 from sklearn.model_selection import train_test_split
 
 seed(1)
-import tensorflow
-from tensorflow import set_random_seed
-set_random_seed(2)
+import tensorflow as tf
+tf.random.set_seed(2)
 
 import pandas as pd
 from keras.models import Sequential, load_model
