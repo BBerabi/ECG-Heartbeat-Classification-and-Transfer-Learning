@@ -1,5 +1,7 @@
 import pandas as pd
 import numpy as np
+import tensorflow as tf
+tf.random.set_seed(2)
 
 from keras import optimizers, losses, activations, models
 from keras.callbacks import ModelCheckpoint, EarlyStopping, LearningRateScheduler, ReduceLROnPlateau
