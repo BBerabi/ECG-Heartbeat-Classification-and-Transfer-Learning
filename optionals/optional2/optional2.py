@@ -1,6 +1,9 @@
 
 import pandas as pd
 import numpy as np
+import tensorflow as tf
+tf.random.set_seed(2)
+
 from keras import Sequential
 from keras.callbacks import ModelCheckpoint, EarlyStopping, ReduceLROnPlateau
 from keras.layers import Dense, BatchNormalization, Dropout
