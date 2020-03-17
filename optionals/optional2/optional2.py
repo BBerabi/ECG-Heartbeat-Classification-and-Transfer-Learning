@@ -79,7 +79,7 @@ checkpoint = ModelCheckpoint(file_name, monitor='val_acc', verbose=1, save_best_
 early = EarlyStopping(monitor="val_acc", mode="max", patience=10, verbose=1)
 redonplat = ReduceLROnPlateau(monitor="val_acc", mode="max", patience=7, verbose=2, factor=0.5)
 
-model.fit(X, Y, epochs=1, verbose=2, callbacks=[checkpoint, early, redonplat], validation_split=0.1,
+model.fit(X, Y, epochs=200, verbose=2, callbacks=[checkpoint, early, redonplat], validation_split=0.1,
           batch_size=64)
 
 pred_test = model.predict(X_test)
