@@ -10,6 +10,10 @@ from sklearn.metrics import precision_recall_curve
 from sklearn.metrics import roc_curve
 from sklearn.metrics import auc
 
+from tensorflow.keras import Sequential
+from tensorflow.keras.callbacks import ModelCheckpoint, EarlyStopping, ReduceLROnPlateau
+from tensorflow.keras.layers import Dense, BatchNormalization, Dropout
+
 import pandas as pd
 
 import os 
@@ -33,19 +37,48 @@ X_test = np.array(df_test[list(range(187))].values)[..., np.newaxis]
 
 
 names = list(paths["PTDB"]["Models"].keys())
-paths = list(paths["PTDB"]["Models"].values())
+names.extend(list(paths["Optionals"]["Optional_1"].keys()))
+names.extend(list(paths["Optionals"]["Optional_2"].keys()))
+names.extend(list(paths["Optionals"]["Optional_3"].keys()))
 print("NAMES ",names)
-print(paths)
+
+
+path = list(paths["PTDB"]["Models"].values())
+path.extend(list(paths["Optionals"]["Optional_1"].values()))
+path.extend(list(paths["Optionals"]["Optional_2"].values()))
+path.extend(list(paths["Optionals"]["Optional_3"].values()))
 
 models = []
 d = dict()
 
-for p in paths :
+for p in path :
     models.append(load_model(filepath=p))
 print(models)
-for i in range(len(models)):
 
-    probabilities = models[i].predict(X_test)
+
+for i in range(len(models)):
+    print("Getting scores of ",names[i])
+    if "Optional1" in names[i] : 
+        print("Proceeding with optional 1 ")
+
+        print("Getting base model")
+
+        if "GRU" in names[i] :
+            base_model = load_model(paths["MITBIH"]["Models"]["GRU"])
+        elif "RNN" in names[i] :
+            base_model = load_model(paths["MITBIH"]["Models"]["RNN"])
+        elif "LSTM" in names[i] :
+            base_model = load_model(paths["MITBIH"]["Models"]["LSTM"])
+        
+        representation_model = Sequential()
+        for layer in base_model.layers[:-3]: # go through until last lstm layer
+            representation_model.add(layer)
+        
+        X_test_representations = representation_model.predict(X_test)
+        probabilities = models[i].predict(X_test_representations)
+    else :
+        probabilities = models[i].predict(X_test)
+
     predictions = (probabilities > 0.5).astype(np.int8)
 
     acc = accuracy_score(predictions, Y_test)
@@ -57,7 +90,8 @@ for i in range(len(models)):
     aucprc = auc(recall, precision)
 
     d[names[i]] = {"Accuracy":acc,"AUCROC":aucroc,"AUCPRC":aucprc}
-    print(d)
+    #print(d)
+    print("Done ",names[i])
 
 
 d = pd.DataFrame(d)

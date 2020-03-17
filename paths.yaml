@@ -1,20 +1,33 @@
 MITBIH:
-  Data: /cluster/home/bberabi/mlfhc/data
+  Data: /home/ander/Documents/git/mlfhc/data
   Models:
-    BRNN: /cluster/home/bberabi/mlfhc/models/brnn/brnn_mitbih.h5
-    CNN_LSTM: /cluster/home/bberabi/mlfhc/models/cnn_lstm/best_clfc_mitbih_9801.h5
-    CNN_Res: /cluster/home/bberabi/mlfhc/models/cnn_res/cnn_residual_mitbih.h5
-    GRU: /cluster/home/bberabi/mlfhc/models/gru/best_model_GRU_mitbih_9817.h5
-    Inception: /cluster/home/bberabi/mlfhc/models/inception/BestModel_Inception_mitbih_9891.h5
-    LSTM: /cluster/home/bberabi/mlfhc/models/lstm/best_model_lstm_mitbih_976.h5
-    RNN: /cluster/home/bberabi/mlfhc/models/rnn/BestModel_RNN_mitbih_908.h5
+    BRNN: /home/ander/Documents/git/mlfhc/models/brnn/brnn_mitbih.h5
+    CNN_LSTM: /home/ander/Documents/git/mlfhc/models/cnn_lstm/best_clfc_mitbih_9801.h5
+    CNN_Res: /home/ander/Documents/git/mlfhc/models/cnn_res/cnn_residual_mitbih.h5
+    GRU: /home/ander/Documents/git/mlfhc/models/gru/best_model_GRU_mitbih_9817.h5
+    Inception: /home/ander/Documents/git/mlfhc/models/inception/BestModel_Inception_mitbih_9891.h5
+    LSTM: /home/ander/Documents/git/mlfhc/models/lstm/best_model_lstm_mitbih_976.h5
+    RNN: /home/ander/Documents/git/mlfhc/models/rnn/BestModel_RNN_mitbih_908.h5
+Optionals:
+  Optional_1:
+    Optional1_GRU: /home/ander/Documents/git/mlfhc/optionals/optional1/optional1_GRU.h5
+    Optional1_LSTM: /home/ander/Documents/git/mlfhc/optionals/optional1/optional1_LSTM.h5
+    Optional1_RNN: /home/ander/Documents/git/mlfhc/optionals/optional1/optional1_RNN.h5
+  Optional_2:
+    Optional2_GRU: /home/ander/Documents/git/mlfhc/optionals/optional2/optional2_GRU.h5
+    Optional2_LSTM: /home/ander/Documents/git/mlfhc/optionals/optional2/optional2_LSTM.h5
+    Optional2_RNN: /home/ander/Documents/git/mlfhc/optionals/optional2/optional2_RNN.h5
+  Optional_3:
+    Optional3_GRU: /home/ander/Documents/git/mlfhc/optionals/optional3/optional3_GRU.h5
+    Optional3_LSTM: /home/ander/Documents/git/mlfhc/optionals/optional3/optional3_LSTM.h5
+    Optional3_RNN: /home/ander/Documents/git/mlfhc/optionals/optional3/optional3_RNN.h5
 PTDB:
-  Data: /cluster/home/bberabi/mlfhc/data
+  Data: /home/ander/Documents/git/mlfhc/data
   Models:
-    BRNN: /cluster/home/bberabi/mlfhc/models/brnn/brnn_ptbdb.h5
-    CNN_LSTM: /cluster/home/bberabi/mlfhc/models/cnn_lstm/best_clf_ptbdb_9776_2cnn.h5
-    CNN_Res: /cluster/home/bberabi/mlfhc/models/cnn_res/cnn_residual_ptbdb.h5
-    GRU: /cluster/home/bberabi/mlfhc/models/gru/BestModel_GRU_ptdb_9014.h5
-    Inception: /cluster/home/bberabi/mlfhc/models/inception/BestModel_Inception_ptdb_7220.h5
-    LSTM: /cluster/home/bberabi/mlfhc/models/lstm/best_model_lstm_ptbdb_9673.h5
-    RNN: /cluster/home/bberabi/mlfhc/models/rnn/BestModel_RNN_ptdb_91.h5
+    BRNN: /home/ander/Documents/git/mlfhc/models/brnn/brnn_ptbdb.h5
+    CNN_LSTM: /home/ander/Documents/git/mlfhc/models/cnn_lstm/best_clf_ptbdb_9776_2cnn.h5
+    CNN_Res: /home/ander/Documents/git/mlfhc/models/cnn_res/cnn_residual_ptbdb.h5
+    GRU: /home/ander/Documents/git/mlfhc/models/gru/BestModel_GRU_ptdb_9014.h5
+    Inception: /home/ander/Documents/git/mlfhc/models/inception/BestModel_Inception_ptdb_7220.h5
+    LSTM: /home/ander/Documents/git/mlfhc/models/lstm/best_model_lstm_ptbdb_9673.h5
+    RNN: /home/ander/Documents/git/mlfhc/models/rnn/BestModel_RNN_ptdb_91.h5

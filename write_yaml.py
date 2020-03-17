@@ -21,7 +21,21 @@ d = {"MITBIH":{
             "CNN_Res":os.path.abspath("models/cnn_res/cnn_residual_ptbdb.h5"),
             "CNN_LSTM":os.path.abspath("models/cnn_lstm/best_clf_ptbdb_9776_2cnn.h5")},
         "Data":os.path.abspath("data")
-    }
+    },
+    "Optionals":{ 
+        "Optional_1":{
+            "Optional1_GRU":os.path.abspath("optionals/optional1/optional1_GRU.h5"),
+            "Optional1_RNN":os.path.abspath("optionals/optional1/optional1_RNN.h5"),
+            "Optional1_LSTM":os.path.abspath("optionals/optional1/optional1_LSTM.h5")},
+        "Optional_2":{
+            "Optional2_GRU":os.path.abspath("optionals/optional2/optional2_GRU.h5"),
+            "Optional2_RNN":os.path.abspath("optionals/optional2/optional2_RNN.h5"),
+            "Optional2_LSTM":os.path.abspath("optionals/optional2/optional2_LSTM.h5")},
+        "Optional_3":{
+            "Optional3_GRU":os.path.abspath("optionals/optional3/optional3_GRU.h5"),
+            "Optional3_RNN":os.path.abspath("optionals/optional3/optional3_RNN.h5"),
+            "Optional3_LSTM":os.path.abspath("optionals/optional3/optional3_LSTM.h5")}
+    }   
 }
          
 with open('paths.yaml','w') as outfile : 
