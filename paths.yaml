@@ -1,3 +1,8 @@
+Baseline:
+  MITBIH: /home/ander/Documents/git/mlfhc/visualization_clustering/baseline_cnn_mitbih.h5
+  MITBIH_Representation: /home/ander/Documents/git/mlfhc/visualization_clustering/mitbih_representations.npy
+  PTDB: /home/ander/Documents/git/mlfhc/visualization_clustering/baseline_cnn_ptbdb.h5
+  PTDB_Representation: /home/ander/Documents/git/mlfhc/visualization_clustering/ptbdb_representations.npy
 MITBIH:
   Data: /home/ander/Documents/git/mlfhc/data
   Models:

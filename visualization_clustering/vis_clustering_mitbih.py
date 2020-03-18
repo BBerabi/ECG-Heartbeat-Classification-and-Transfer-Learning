@@ -8,10 +8,17 @@ from sklearn.cluster import KMeans
 from keras.models import load_model, Sequential
 
 
-model = load_model('baseline_cnn_mitbih.h5')
 
-df_train = pd.read_csv("mitbih_train.csv", header=None)
+import os 
+import yaml 
+with open("paths.yaml",'r') as f :
+    paths = yaml.load(f, Loader=yaml.FullLoader)
+
+path_mitbih = os.path.join(paths["MITBIH"]["Data"], "mitbih_train.csv")
+df_train = pd.read_csv(path_mitbih, header=None)
 df_train = df_train.sample(frac=1)
+
+model = load_model(paths["Baseline"]["MITBIH"])
 
 Y = np.array(df_train[187].values).astype(np.int8)
 X = np.array(df_train[list(range(187))].values)[..., np.newaxis]
@@ -21,12 +28,14 @@ for layer in model.layers[:-1]: # go through until last layer
     representation_model.add(layer)
 representation_model.summary()
 
-if os.path.isfile('mitbih_representations.npy'):
+path_mitbih = paths["Baseline"]["MITBIH_Representation"]
+
+if os.path.isfile(path_mitbih):
     print('loading representations')
-    embeddings = np.load('mitbih_representations.npy')
+    embeddings = np.load(path_mitbih)
 else:
     embeddings = representation_model.predict(X)
-    np.save('mitbih_representations.npy', embeddings)
+    np.save(path_mitbih, embeddings)
 
 N = 40000
 p = np.random.permutation(len(embeddings))

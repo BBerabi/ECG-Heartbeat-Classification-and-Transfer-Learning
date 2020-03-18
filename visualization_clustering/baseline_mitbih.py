@@ -7,9 +7,18 @@ from keras.layers import Dense, Input, Dropout, Convolution1D, MaxPool1D, Global
     concatenate
 from sklearn.metrics import f1_score, accuracy_score
 
-df_train = pd.read_csv("mitbih_train.csv", header=None)
+
+import os 
+import yaml 
+with open("paths.yaml",'r') as f :
+    paths = yaml.load(f, Loader=yaml.FullLoader)
+
+path_mitbih_train = os.path.join(paths["MITBIH"]["Data"], "mitbih_train.csv")
+path_mitbih_test = os.path.join(paths["MITBIH"]["Data"], "mitbih_test.csv")
+
+df_train = pd.read_csv(path_mitbih_train, header=None)
 df_train = df_train.sample(frac=1)
-df_test = pd.read_csv("mitbih_test.csv", header=None)
+df_test = pd.read_csv(path_mitbih_test, header=None)
 
 Y = np.array(df_train[187].values).astype(np.int8)
 X = np.array(df_train[list(range(187))].values)[..., np.newaxis]
@@ -50,13 +59,13 @@ def get_model():
     return model
 
 model = get_model()
-file_path = "baseline_cnn_mitbih.h5"
+file_path = "./visualization_clustering/Baseline_CNN_mitbih.h5"
 checkpoint = ModelCheckpoint(file_path, monitor='val_acc', verbose=1, save_best_only=True, mode='max')
 early = EarlyStopping(monitor="val_acc", mode="max", patience=5, verbose=1)
 redonplat = ReduceLROnPlateau(monitor="val_acc", mode="max", patience=3, verbose=2)
 callbacks_list = [checkpoint, early, redonplat]  # early
 
-model.fit(X, Y, epochs=1000, verbose=2, callbacks=callbacks_list, validation_split=0.1)
+model.fit(X, Y, epochs=1, verbose=2, callbacks=callbacks_list, validation_split=0.1)
 model.load_weights(file_path)
 
 pred_test = model.predict(X_test)

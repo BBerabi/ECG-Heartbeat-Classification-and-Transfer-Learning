@@ -2,8 +2,10 @@ import numpy as np
 import pandas as pd
 from matplotlib import pyplot as plt
 from random import randint
-
-
+import os 
+import yaml
+with open("paths.yaml",'r') as f :
+    paths = yaml.load(f, Loader=yaml.FullLoader)
 
 def plot_mean_signals_and_one_random(data):
     number_of_samples = data.shape[0]
@@ -37,12 +39,19 @@ def plot_mean_signals_and_one_random(data):
 
     plt.show()
 
-data_normal = pd.read_csv("ptbdb_normal.csv").values
-data_abnormal = pd.read_csv('ptbdb_abnormal.csv').values
+
+path_normal = os.path.join(paths["PTDB"]["Data"], "ptbdb_normal.csv")
+path_abnormal = os.path.join(paths["PTDB"]["Data"], "ptbdb_abnormal.csv")
+
+data_normal = pd.read_csv(path_normal).values
+data_abnormal = pd.read_csv(path_abnormal).values
 data_train = np.concatenate((data_normal, data_abnormal), axis=0)
 
+path_mitbih = os.path.join(paths["MITBIH"]["Data"], "mitbih_train.csv")
+
+
 plot_mean_signals_and_one_random(data_train)
-data_train = pd.read_csv('mitbih_train.csv').values
+data_train = pd.read_csv(path_mitbih).values
 plot_mean_signals_and_one_random(data_train)
 
 

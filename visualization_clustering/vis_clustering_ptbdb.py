@@ -6,12 +6,19 @@ from mpl_toolkits.mplot3d import Axes3D
 from sklearn.manifold import TSNE
 from sklearn.cluster import KMeans
 from keras.models import load_model, Sequential
+import yaml 
+import os 
 
+with open("paths.yaml",'r') as f :
+    paths = yaml.load(f, Loader=yaml.FullLoader)
 
-model = load_model('baseline_cnn_ptbdb.h5')
+path_normal = os.path.join(paths["PTDB"]["Data"], "ptbdb_normal.csv")
+path_abnormal = os.path.join(paths["PTDB"]["Data"], "ptbdb_abnormal.csv")
 
-df_1 = pd.read_csv("ptbdb_normal.csv", header=None)
-df_2 = pd.read_csv("ptbdb_abnormal.csv", header=None)
+model = load_model(paths["Baseline"]["PTDB"])
+
+df_1 = pd.read_csv(path_normal, header=None)
+df_2 = pd.read_csv(path_abnormal, header=None)
 df = pd.concat([df_1, df_2])
 
 
@@ -25,12 +32,14 @@ for layer in model.layers[:-1]:  # go through until last layer
     representation_model.add(layer)
 representation_model.summary()
 
-if os.path.isfile('ptbdb_representations.npy'):
+path_ptdb = paths["Baseline"]["PTDB_Representation"]
+
+if os.path.isfile(path_ptdb):
     print('loading representations')
-    embeddings = np.load('ptbdb_representations.npy')
+    embeddings = np.load(path_ptdb)
 else:
     embeddings = representation_model.predict(X)
-    np.save('ptbdb_representations.npy', embeddings)
+    np.save(path_ptdb, embeddings)
 
 N = 5000
 p = np.random.permutation(len(embeddings))

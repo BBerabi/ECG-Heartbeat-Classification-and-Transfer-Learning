@@ -7,9 +7,17 @@ from keras.layers import Dense, Input, Dropout, Convolution1D, MaxPool1D, Global
     concatenate
 from sklearn.metrics import accuracy_score, f1_score
 from sklearn.model_selection import train_test_split
+import yaml
+import os 
 
-df_1 = pd.read_csv("ptbdb_normal.csv", header=None)
-df_2 = pd.read_csv("ptbdb_abnormal.csv", header=None)
+with open("paths.yaml",'r') as f :
+    paths = yaml.load(f, Loader=yaml.FullLoader)
+
+path_normal = os.path.join(paths["PTDB"]["Data"], "ptbdb_normal.csv")
+path_abnormal = os.path.join(paths["PTDB"]["Data"], "ptbdb_abnormal.csv")
+
+df_1 = pd.read_csv(path_normal, header=None)
+df_2 = pd.read_csv(path_abnormal, header=None)
 df = pd.concat([df_1, df_2])
 
 df_train, df_test = train_test_split(df, test_size=0.2, random_state=1337, stratify=df[187])
@@ -54,13 +62,13 @@ def get_model():
     return model
 
 model = get_model()
-file_path = "baseline_cnn_ptbdb.h5"
+file_path = "./visualization_clustering/Baseline_CNN_ptdb.h5"
 checkpoint = ModelCheckpoint(file_path, monitor='val_acc', verbose=1, save_best_only=True, mode='max')
 early = EarlyStopping(monitor="val_acc", mode="max", patience=5, verbose=1)
 redonplat = ReduceLROnPlateau(monitor="val_acc", mode="max", patience=3, verbose=2)
 callbacks_list = [checkpoint, early, redonplat]  # early
 
-model.fit(X, Y, epochs=1000, verbose=2, callbacks=callbacks_list, validation_split=0.1)
+model.fit(X, Y, epochs=1, verbose=2, callbacks=callbacks_list, validation_split=0.1)
 model.load_weights(file_path)
 
 pred_test = model.predict(X_test)

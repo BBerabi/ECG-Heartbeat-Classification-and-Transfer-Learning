@@ -35,7 +35,14 @@ d = {"MITBIH":{
             "Optional3_GRU":os.path.abspath("optionals/optional3/optional3_GRU.h5"),
             "Optional3_RNN":os.path.abspath("optionals/optional3/optional3_RNN.h5"),
             "Optional3_LSTM":os.path.abspath("optionals/optional3/optional3_LSTM.h5")}
-    }   
+    },
+    "Baseline":{
+        "MITBIH":os.path.abspath("visualization_clustering/baseline_cnn_mitbih.h5"),
+        "PTDB":os.path.abspath("visualization_clustering/baseline_cnn_ptbdb.h5"),
+        "MITBIH_Representation":os.path.abspath("visualization_clustering/mitbih_representations.npy"),
+        "PTDB_Representation":os.path.abspath("visualization_clustering/ptbdb_representations.npy")
+    }
+
 }
          
 with open('paths.yaml','w') as outfile : 
