@@ -17,13 +17,15 @@ print('----------------------------------------------')
 
 import os 
 import yaml 
-with open("paths.yaml",'r') as f :
+with open("new_paths.yaml",'r') as f :
     paths = yaml.load(f, Loader=yaml.FullLoader)
 
 import argparse 
 parser = argparse.ArgumentParser()
 parser.add_argument('--model',type=str)
+parser.add_argument('--epoch',default=100,type=int)
 args = parser.parse_args()
+nr_epoch = args.epoch 
 
 model_name = paths['MITBIH']['Models'][args.model]
 print("Loading Model :",model_name)
@@ -78,13 +80,15 @@ print("Model Summary after adding fc layers and freezing layers from base model"
 model.summary()
 
 # Now train the output layers
-file_name = "optional3_"+args.model+".h5"
+file_name = "OPT3_"+args.model+".h5"
+path_model = os.path.join(os.path.dirname(paths['Optionals']['Optional_3']['Optional3_RNN']),file_name)
+
 print("Best model will be saved in ",file_name)
-checkpoint = ModelCheckpoint(file_name, monitor='val_acc', verbose=1, save_best_only=True, mode='max')
+checkpoint = ModelCheckpoint(path_model, monitor='val_acc', verbose=1, save_best_only=True, mode='max')
 early = EarlyStopping(monitor="val_acc", mode="max", patience=10, verbose=1)
 redonplat = ReduceLROnPlateau(monitor="val_acc", mode="max", patience=7, verbose=2, factor=0.5)
 
-model.fit(X, Y, epochs=100, verbose=2, callbacks=[checkpoint, early, redonplat], validation_split=0.1,
+model.fit(X, Y, epochs=nr_epoch, verbose=2, callbacks=[checkpoint, early, redonplat], validation_split=0.1,
           batch_size=64)
 
 pred_test = model.predict(X_test)
@@ -103,7 +107,7 @@ print("Model Summary after unfreezing layers")
 model.compile(loss='binary_crossentropy', metrics=['acc'], optimizer=opt)
 model.summary()
 
-model.fit(X, Y, epochs=100, verbose=2, callbacks=[checkpoint, early, redonplat], validation_split=0.1,
+model.fit(X, Y, epochs=nr_epoch, verbose=2, callbacks=[checkpoint, early, redonplat], validation_split=0.1,
           batch_size=64)
 pred_test = model.predict(X_test)
 pred_test = (pred_test>0.5).astype(np.int8)

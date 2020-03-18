@@ -2,9 +2,7 @@ import numpy as np
 from numpy.random import seed
 seed(1)
 import tensorflow as tf
-#from tensorflow import set_random_seed
-tf.compat.v1.set_random_seed(2)
-
+tf.random.set_seed(2)
 
 import pandas as pd
 from keras.models import Sequential, load_model
@@ -16,9 +14,17 @@ from keras.optimizers import Adam
 from keras.callbacks import ModelCheckpoint, EarlyStopping, ReduceLROnPlateau
 from sklearn.utils import class_weight
 from sklearn.metrics import accuracy_score
+import os 
+import yaml
+import argparse 
 
-print("TF VERSION")
-print(tf.__version__)
+with open("paths.yaml",'r') as f :
+    paths = yaml.load(f, Loader=yaml.FullLoader)
+
+parser = argparse.ArgumentParser()
+parser.add_argument('--epoch',default=100,type=int)
+args = parser.parse_args()
+nr_epoch = args.epoch
 
 df_train = pd.read_csv("./data/mitbih_train.csv", header=None)
 df_train = df_train.sample(frac=1)
@@ -32,10 +38,7 @@ X_test = np.array(df_test[list(range(187))].values)[..., np.newaxis]
 
 X = np.reshape(X, (len(X), 187, 1))
 
-# weights = class_weight.compute_class_weight('balanced', np.unique(Y), Y)
-# weights = dict(zip(list(range(5)), weights))
 
-# print(weights)
 Y = np_utils.to_categorical(Y)
 
 print('Data shape: ', X.shape)
@@ -78,20 +81,20 @@ gap_layer = tf.keras.layers.GlobalAveragePooling1D()(L)
 output_layer = tf.keras.layers.Dense(units=5, activation='softmax')(gap_layer)
 model = tf.keras.models.Model(inputs=input_layer,outputs=output_layer)
 
-#model = get_model()
 opt = tf.keras.optimizers.Adam(lr=0.001)
 
-check = ModelCheckpoint('best_model_Inception_mitbih.h5', monitor='val_acc', save_best_only=True, mode='max', verbose=2)
+path_model = os.path.join(os.path.dirname(paths['MITBIH']['Models']['Inception']),'INCEPTION_mitbih.h5')
+
+check = ModelCheckpoint(path_model, monitor='val_acc', save_best_only=True, mode='max', verbose=2)
 early = EarlyStopping(monitor='val_acc', mode='max', patience=6, verbose=2)
 reduce_lr = ReduceLROnPlateau(monitor='val_acc', factor=0.2, patience=3, verbose=2)
 
 model.compile(loss='categorical_crossentropy', optimizer=opt, metrics=['acc'])
 model.summary()
-model.fit(X, Y, epochs=100, batch_size=64, callbacks=[check, early, reduce_lr],validation_split=0.1)
+model.fit(X, Y, epochs=nr_epoch, batch_size=64, callbacks=[check, early, reduce_lr],validation_split=0.1)
 
 predictions = model.predict(X_test)
-print(X_test.shape)
-print(predictions.shape)
+
 predictions = np.argmax(predictions, axis=-1)
 
 

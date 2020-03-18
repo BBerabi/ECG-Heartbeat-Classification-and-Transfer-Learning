@@ -10,9 +10,21 @@ from keras.layers import Dense, Input, Dropout, Convolution1D, MaxPool1D, Global
 from keras.utils import np_utils
 from sklearn.metrics import f1_score, accuracy_score
 
-df_train = pd.read_csv("mitbih_train.csv", header=None)
+import os 
+import yaml
+import argparse 
+
+with open("paths.yaml",'r') as f :
+    paths = yaml.load(f, Loader=yaml.FullLoader)
+
+parser = argparse.ArgumentParser()
+parser.add_argument('--epoch',default=100,type=int)
+args = parser.parse_args()
+nr_epoch = args.epoch
+
+df_train = pd.read_csv("./data/mitbih_train.csv", header=None)
 df_train = df_train.sample(frac=1)
-df_test = pd.read_csv("mitbih_test.csv", header=None)
+df_test = pd.read_csv("./data/mitbih_test.csv", header=None)
 
 Y = np.array(df_train[187].values).astype(np.int8)
 X = np.array(df_train[list(range(187))].values)[..., np.newaxis]
@@ -62,11 +74,13 @@ model = get_model()
 
 Y = np_utils.to_categorical(Y)
 
-checkpoint = ModelCheckpoint("best_clfc.h5", monitor='val_acc', verbose=2, save_best_only=True, mode='max')
+path_model = os.path.join(os.path.dirname(paths['MITBIH']['Models']['CNN_LSTM']),'CNN_LSTM_mitbih.h5')
+
+checkpoint = ModelCheckpoint(path_model, monitor='val_acc', verbose=2, save_best_only=True, mode='max')
 early = EarlyStopping(monitor="val_acc", mode="max", patience=3, verbose=2)
 redonplat = ReduceLROnPlateau(monitor="val_acc", mode="max", patience=3, verbose=2)
 
-model.fit(X, Y, epochs=100, verbose=2, callbacks=[checkpoint, early, redonplat], validation_split=0.1)
+model.fit(X, Y, epochs=nr_epoch, verbose=2, callbacks=[checkpoint, early, redonplat], validation_split=0.1)
 
 
 pred_test = model.predict(X_test)

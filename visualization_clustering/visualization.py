@@ -28,14 +28,14 @@ def plot_mean_signals_and_one_random(data):
     f, axarr = plt.subplots(2, number_of_labels, 'none')
     for i in range(number_of_labels):
         axarr[0, i].plot(pd.DataFrame(mean_signals[i]))
-        axarr[0, i].title.set_text("Mean Signal of Label " + str(i))
+        axarr[0, i].title.set_text("Mean of " + str(i))
 
         indices = np.where(labels == i)[0]
         random_index = randint(0, indices.shape[0])
         signal_random = data[random_index, :]
 
         axarr[1, i].plot(pd.DataFrame(signal_random))
-        axarr[1, i].title.set_text("Random Signal from Label " + str(i))
+        axarr[1, i].title.set_text("Signal of " + str(i))
 
     plt.show()
 
@@ -49,9 +49,10 @@ data_train = np.concatenate((data_normal, data_abnormal), axis=0)
 
 path_mitbih = os.path.join(paths["MITBIH"]["Data"], "mitbih_train.csv")
 
-
+print("Plot for PTBDB Dataset")
 plot_mean_signals_and_one_random(data_train)
 data_train = pd.read_csv(path_mitbih).values
+print("Plot for MITBIH Dataset")
 plot_mean_signals_and_one_random(data_train)
 
 

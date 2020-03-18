@@ -1,7 +1,7 @@
 from numpy.random import seed
 seed(1)
-from tensorflow.compat.v1 import set_random_seed
-set_random_seed(2)
+import tensorflow as tf 
+tf.random.set_seed(2)
 import pandas as pd
 import numpy as np
 
@@ -9,11 +9,21 @@ from keras import optimizers, losses, activations, models
 from keras.callbacks import ModelCheckpoint, EarlyStopping, ReduceLROnPlateau
 from keras.layers import Dense, Input, Dropout, Convolution1D, MaxPool1D, GlobalMaxPool1D, Add
 from sklearn.metrics import f1_score, accuracy_score
+import os 
+import yaml
+import argparse 
 
+with open("paths.yaml",'r') as f :
+    paths = yaml.load(f, Loader=yaml.FullLoader)
 
-df_train = pd.read_csv("../Data/mitbih_train.csv", header=None)
+parser = argparse.ArgumentParser()
+parser.add_argument('--epoch',default=100,type=int)
+args = parser.parse_args()
+nr_epoch = args.epoch
+
+df_train = pd.read_csv("./data/mitbih_train.csv", header=None)
 df_train = df_train.sample(frac=1)
-df_test = pd.read_csv("../Data/mitbih_test.csv", header=None)
+df_test = pd.read_csv("./data/mitbih_test.csv", header=None)
 
 Y = np.array(df_train[187].values).astype(np.int8)
 X = np.array(df_train[list(range(187))].values)[..., np.newaxis]
@@ -61,14 +71,13 @@ def get_model():
     return model
 
 model = get_model()
-file_path = "cnn_residual_mitbih.h5"
-checkpoint = ModelCheckpoint(file_path, monitor='val_acc', verbose=1, save_best_only=True, mode='max')
+path_model = os.path.join(os.path.dirname(paths['MITBIH']['Models']['CNN_Res']),'CNN_RES_mitbih.h5')
+checkpoint = ModelCheckpoint(path_model, monitor='val_acc', verbose=1, save_best_only=True, mode='max')
 early = EarlyStopping(monitor="val_acc", mode="max", patience=5, verbose=1)
 redonplat = ReduceLROnPlateau(monitor="val_acc", mode="max", patience=3, verbose=2)
 callbacks_list = [checkpoint, early, redonplat]  # early
 
-model.fit(X, Y, epochs=1000, verbose=2, callbacks=callbacks_list, validation_split=0.1)
-model.load_weights(file_path)
+model.fit(X, Y, epochs=nr_epoch, verbose=2, callbacks=callbacks_list, validation_split=0.1)
 
 pred_test = model.predict(X_test)
 pred_test = np.argmax(pred_test, axis=-1)

@@ -9,10 +9,10 @@ import pandas as pd
 import os 
 import yaml 
 
-with open("paths.yaml",'r') as f :
+with open("new_paths.yaml",'r') as f :
     paths = yaml.load(f, Loader=yaml.FullLoader)
 
-path_csv = "./models/ensemble/ensemble2_mitbih.csv"
+path_csv = "./models/ensemble/ENS2_mitbih.csv"
 path_test = os.path.join(paths["MITBIH"]["Data"], "mitbih_test.csv")
 
 

@@ -10,10 +10,10 @@ import pandas as pd
 import os 
 import yaml 
 
-with open("paths.yaml",'r') as f :
+with open("new_paths.yaml",'r') as f :
     paths = yaml.load(f, Loader=yaml.FullLoader)
 
-path_csv = "./models/ensemble/ensemble_ptdb.csv"
+path_csv = "./models/ensemble/ENS_ptdb.csv"
 path_normal = os.path.join(paths["PTDB"]["Data"], "ptbdb_normal.csv")
 path_abnormal = os.path.join(paths["PTDB"]["Data"], "ptbdb_abnormal.csv")
 

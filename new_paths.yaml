@@ -1,0 +1,38 @@
+Baseline:
+  MITBIH: /home/ander/Documents/git/mlfhc/visualization_clustering/baseline_cnn_mitbih.h5
+  MITBIH_Representation: /home/ander/Documents/git/mlfhc/visualization_clustering/mitbih_representations.npy
+  PTDB: /home/ander/Documents/git/mlfhc/visualization_clustering/baseline_cnn_ptbdb.h5
+  PTDB_Representation: /home/ander/Documents/git/mlfhc/visualization_clustering/ptbdb_representations.npy
+MITBIH:
+  Data: /home/ander/Documents/git/mlfhc/data
+  Models:
+    BRNN: /home/ander/Documents/git/mlfhc/models/brnn/BRNN_mitbih.h5
+    CNN_LSTM: /home/ander/Documents/git/mlfhc/models/cnn_lstm/CNN_LSTM_mitbih.h5
+    CNN_Res: /home/ander/Documents/git/mlfhc/models/cnn_res/CNN_RES_mitbih.h5
+    GRU: /home/ander/Documents/git/mlfhc/models/gru/GRU_mitbih.h5
+    Inception: /home/ander/Documents/git/mlfhc/models/inception/INCEPTION_mitbih.h5
+    LSTM: /home/ander/Documents/git/mlfhc/models/lstm/LSTM_mitbih.h5
+    RNN: /home/ander/Documents/git/mlfhc/models/rnn/RNN_mitbih.h5
+Optionals:
+  Optional_1:
+    Optional1_GRU: /home/ander/Documents/git/mlfhc/optionals/optional1/OPT1_GRU.h5
+    Optional1_LSTM: /home/ander/Documents/git/mlfhc/optionals/optional1/OPT1_LSTM.h5
+    Optional1_RNN: /home/ander/Documents/git/mlfhc/optionals/optional1/OPT1_RNN.h5
+  Optional_2:
+    Optional2_GRU: /home/ander/Documents/git/mlfhc/optionals/optional2/OPT2_GRU.h5
+    Optional2_LSTM: /home/ander/Documents/git/mlfhc/optionals/optional2/OPT2_LSTM.h5
+    Optional2_RNN: /home/ander/Documents/git/mlfhc/optionals/optional2/OPT2_RNN.h5
+  Optional_3:
+    Optional3_GRU: /home/ander/Documents/git/mlfhc/optionals/optional3/OPT3_GRU.h5
+    Optional3_LSTM: /home/ander/Documents/git/mlfhc/optionals/optional3/OPT3_LSTM.h5
+    Optional3_RNN: /home/ander/Documents/git/mlfhc/optionals/optional3/OPT3_RNN.h5
+PTDB:
+  Data: /home/ander/Documents/git/mlfhc/data
+  Models:
+    BRNN: /home/ander/Documents/git/mlfhc/models/brnn/BRNN_ptdb.h5
+    CNN_LSTM: /home/ander/Documents/git/mlfhc/models/cnn_lstm/CNN_LSTM_ptdb.h5
+    CNN_Res: /home/ander/Documents/git/mlfhc/models/cnn_res/CNN_RES_ptdb.h5
+    GRU: /home/ander/Documents/git/mlfhc/models/gru/GRU_ptdb.h5
+    Inception: /home/ander/Documents/git/mlfhc/models/inception/INCEPTION_ptdb.h5
+    LSTM: /home/ander/Documents/git/mlfhc/models/lstm/LSTM_ptdb.h5
+    RNN: /home/ander/Documents/git/mlfhc/models/rnn/RNN_ptdb.h5

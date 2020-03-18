@@ -4,9 +4,7 @@ from sklearn.model_selection import train_test_split
 
 seed(1)
 import tensorflow as tf
-from tensorflow import set_random_seed
-
-set_random_seed(2)
+tf.random.set_seed(2)
 
 import pandas as pd
 from keras.models import Sequential, load_model
@@ -18,9 +16,23 @@ from keras.optimizers import Adam, RMSprop
 from keras.callbacks import ModelCheckpoint, EarlyStopping, ReduceLROnPlateau
 from sklearn.utils import class_weight
 from sklearn.metrics import accuracy_score
+import os 
+import yaml 
+with open("paths.yaml",'r') as f :
+    paths = yaml.load(f, Loader=yaml.FullLoader)
 
-df_1 = pd.read_csv("./data/ptbdb_normal.csv", header=None)
-df_2 = pd.read_csv("./data/ptbdb_abnormal.csv", header=None)
+
+import argparse 
+parser = argparse.ArgumentParser()
+parser.add_argument('--epoch',default=100,type=int)
+args = parser.parse_args()
+nr_epoch = args.epoch
+
+
+path_normal = os.path.join(paths["PTDB"]["Data"], "ptbdb_normal.csv")
+path_abnormal = os.path.join(paths["PTDB"]["Data"], "ptbdb_abnormal.csv")
+df_1 = pd.read_csv(path_normal, header=None)
+df_2 = pd.read_csv(path_abnormal, header=None)
 df = pd.concat([df_1, df_2])
 
 df_train, df_test = train_test_split(df, test_size=0.2, random_state=1337, stratify=df[187])
@@ -66,12 +78,16 @@ def get_model():
 model = get_model()
 opt = Adam(lr=0.0001)
 
-check = ModelCheckpoint('best_model_RNN_ptdb.h5', monitor='val_acc', save_best_only=True, mode='max', verbose=2)
+
+
+
+path_model = os.path.join(os.path.dirname(paths['PTDB']['Models']['RNN']),'RNN_ptdb.h5')
+check = ModelCheckpoint(path_model, monitor='val_acc', save_best_only=True, mode='max', verbose=2)
 early = EarlyStopping(monitor='val_acc', mode='max', patience=10, verbose=2)
 reduce_lr = ReduceLROnPlateau(monitor='val_acc', factor=0.2, patience=3, verbose=2)
 
 model.compile(loss='binary_crossentropy', optimizer=opt, metrics=['acc'])
-model.fit(X, Y, epochs=200, batch_size=64, callbacks=[check, early, reduce_lr],
+model.fit(X, Y, epochs=nr_epoch, batch_size=64, callbacks=[check, early, reduce_lr],
           validation_split=0.1)
 
 predictions = model.predict(X_test)

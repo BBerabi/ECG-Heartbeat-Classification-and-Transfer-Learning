@@ -64,8 +64,8 @@ if dimension == 2:
 
     plt.xlabel('x')
     plt.ylabel('y')
-    # plt.show()
-    plt.savefig('vis_cluster.png')
+    plt.show()
+    #plt.savefig('vis_cluster.png')
 else:
     fig = plt.figure()
     ax = Axes3D(fig)

@@ -16,10 +16,22 @@ from keras.optimizers import Adam, Adagrad, Adadelta, RMSprop
 from keras.callbacks import ModelCheckpoint, EarlyStopping, ReduceLROnPlateau
 from sklearn.utils import class_weight
 from sklearn.metrics import accuracy_score
+import os 
+import yaml
+import argparse 
+
+with open("paths.yaml",'r') as f :
+    paths = yaml.load(f, Loader=yaml.FullLoader)
+
+parser = argparse.ArgumentParser()
+parser.add_argument('--epoch',default=100,type=int)
+args = parser.parse_args()
+nr_epoch = args.epoch
 
 
-df_1 = pd.read_csv("ptbdb_normal.csv", header=None)
-df_2 = pd.read_csv("ptbdb_abnormal.csv", header=None)
+
+df_1 = pd.read_csv("./data/ptbdb_normal.csv", header=None)
+df_2 = pd.read_csv("./data/ptbdb_abnormal.csv", header=None)
 df = pd.concat([df_1, df_2])
 
 df_train, df_test = train_test_split(df, test_size=0.2, random_state=1337, stratify=df[187])
@@ -35,17 +47,9 @@ X_test = np.array(df_test[list(range(187))].values)[..., np.newaxis]
 X = np.reshape(X, (len(X), 187, 1))
 X_test = np.reshape(X_test, (len(X_test), 187, 1))
 
-weights = class_weight.compute_class_weight('balanced', np.unique(Y), Y)
-weights_dict = {}
-for i in range(2):
-    weights_dict[i] = weights[i]
-print(weights_dict)
 
-# Y = np_utils.to_categorical(Y)
-# Y_test = np_utils.to_categorical(Y_test)
 
-print('Data shape: ', X.shape)
-print('Y shape: ', Y.shape)
+
 
 def get_model():
     model = Sequential()
@@ -83,19 +87,18 @@ def get_model():
 model = get_model()
 opt = RMSprop(lr=0.001)
 
-check = ModelCheckpoint('best_model.h5', monitor='val_acc', save_best_only=True, mode='max', verbose=2)
+path_model = os.path.join(os.path.dirname(paths['PTDB']['Models']['LSTM']),'LSTM_ptdb.h5')
+check = ModelCheckpoint(path_model, monitor='val_acc', save_best_only=True, mode='max', verbose=2)
 early = EarlyStopping(monitor='val_acc', mode='max', patience=10, verbose=2)
 reduce_lr = ReduceLROnPlateau(monitor='val_acc', factor=0.2, patience=3, verbose=2)
 
 model.compile(loss='binary_crossentropy', optimizer=opt, metrics=['acc'])
-model.fit(X, Y, epochs=100, batch_size=64, callbacks=[check, early, reduce_lr], validation_split=0.1)
+model.fit(X, Y, epochs=nr_epoch, batch_size=64, callbacks=[check, early, reduce_lr], validation_split=0.1)
 
 predictions = model.predict(X_test)
 predictions = (predictions > 0.5).astype(np.int8)
 
-print(X_test.shape)
-print(predictions.shape)
-# predictions = np.argmax(predictions, axis=-1)
+
 
 
 acc = accuracy_score(predictions, Y_test)
