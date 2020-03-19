@@ -10,7 +10,15 @@ import pandas as pd
 import os 
 import yaml 
 
-with open("new_paths.yaml",'r') as f :
+import argparse
+parser = argparse.ArgumentParser()
+parser.add_argument('--yaml',type=str)
+args = parser.parse_args()
+
+path_yaml = args.yaml
+
+
+with open(path_yaml,'r') as f :
     paths = yaml.load(f, Loader=yaml.FullLoader)
 
 path_csv = "./models/ensemble/ENS_ptdb.csv"
@@ -29,8 +37,7 @@ X_test = np.array(df_test[list(range(187))].values)[..., np.newaxis]
 
 names = list(paths["PTDB"]["Models"].keys())
 paths = list(paths["PTDB"]["Models"].values())
-print("NAMES ",names)
-print(paths)
+
 
 models = []
 
@@ -61,4 +68,5 @@ print("AUCPRC: ", aucprc)
 
 d = {"Ensemble":{"Accuracy":acc,"AUCROC":aucroc,"AUCPRC":aucprc}}
 d = pd.DataFrame(d)
-d.to_csv(path_csv)
+#d.to_csv(path_csv)
+#print(d)

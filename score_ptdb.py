@@ -20,8 +20,17 @@ import os
 import yaml 
 
 path_csv = "./scores_ptdb.csv"
-with open("paths.yaml",'r') as f :
+import argparse
+parser = argparse.ArgumentParser()
+parser.add_argument('--yaml',type=str)
+args = parser.parse_args()
+
+path_yaml = args.yaml
+
+
+with open(path_yaml,'r') as f :
     paths = yaml.load(f, Loader=yaml.FullLoader)
+
 
 path_normal = os.path.join(paths["PTDB"]["Data"], "ptbdb_normal.csv")
 path_abnormal = os.path.join(paths["PTDB"]["Data"], "ptbdb_abnormal.csv")
@@ -40,7 +49,7 @@ names = list(paths["PTDB"]["Models"].keys())
 names.extend(list(paths["Optionals"]["Optional_1"].keys()))
 names.extend(list(paths["Optionals"]["Optional_2"].keys()))
 names.extend(list(paths["Optionals"]["Optional_3"].keys()))
-print("NAMES ",names)
+#print("NAMES ",names)
 
 
 path = list(paths["PTDB"]["Models"].values())
@@ -53,15 +62,15 @@ d = dict()
 
 for p in path :
     models.append(load_model(filepath=p))
-print(models)
+#print(models)
 
 
 for i in range(len(models)):
-    print("Getting scores of ",names[i])
+    #print("Getting scores of ",names[i])
     if "Optional1" in names[i] : 
-        print("Proceeding with optional 1 ")
+        #print("Proceeding with optional 1 ")
 
-        print("Getting base model")
+        #print("Getting base model")
 
         if "GRU" in names[i] :
             base_model = load_model(paths["MITBIH"]["Models"]["GRU"])
@@ -91,11 +100,12 @@ for i in range(len(models)):
 
     d[names[i]] = {"Accuracy":acc,"AUCROC":aucroc,"AUCPRC":aucprc}
     #print(d)
-    print("Done ",names[i])
+    #print("Done ",names[i])
 
 
 d = pd.DataFrame(d)
-d.to_csv(path_csv)
+print(d)
+#d.to_csv(path_csv)
 
 
 

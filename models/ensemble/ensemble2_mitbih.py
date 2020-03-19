@@ -9,7 +9,15 @@ import pandas as pd
 import os 
 import yaml 
 
-with open("new_paths.yaml",'r') as f :
+import argparse
+parser = argparse.ArgumentParser()
+parser.add_argument('--yaml',type=str)
+args = parser.parse_args()
+
+path_yaml = args.yaml
+
+
+with open(path_yaml,'r') as f :
     paths = yaml.load(f, Loader=yaml.FullLoader)
 
 path_csv = "./models/ensemble/ENS2_mitbih.csv"
@@ -27,8 +35,8 @@ del df_test
 names = ["BRNN","CNN_LSTM","CNN_Res","GRU","Inception"]
 
 paths = [paths["MITBIH"]["Models"][n] for n in names ] 
-print("NAMES ",names)
-print(paths)
+#print("NAMES ",names)
+#print(paths)
 
 models = []
 
@@ -49,4 +57,5 @@ print("=====ENSEMBLE MODEL=====")
 print("Accuracy: ", acc)
 d = {"Ensemble":{"Accuracy":acc}}
 d = pd.DataFrame(d)
-d.to_csv(path_csv)
+#print(d)
+#d.to_csv(path_csv)

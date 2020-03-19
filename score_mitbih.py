@@ -11,7 +11,15 @@ import os
 import yaml 
 path_csv = "./scores_mitbih.csv"
 
-with open("paths.yaml",'r') as f :
+import argparse
+parser = argparse.ArgumentParser()
+parser.add_argument('--yaml',type=str)
+args = parser.parse_args()
+
+path_yaml = args.yaml
+
+
+with open(path_yaml,'r') as f :
     paths = yaml.load(f, Loader=yaml.FullLoader)
 
 path_mitbih = os.path.join(paths["MITBIH"]["Data"], "mitbih_test.csv")
@@ -26,8 +34,8 @@ del df_test
 
 names = list(paths["MITBIH"]["Models"].keys())
 paths = list(paths["MITBIH"]["Models"].values())
-print("NAMES ",names)
-print(paths)
+'''print("NAMES ",names)
+print(paths)'''
 models = []
 accs = []
 d = dict()
@@ -42,4 +50,5 @@ for i in range(len(models)):
     #accs.append(accuracy_score(predictions, Y))
 
 d = pd.DataFrame(d,index=["Accuracy"])
-d.to_csv(path_csv)
+print(d)
+#d.to_csv(path_csv)
