@@ -1,8 +1,8 @@
-matplotlib==3.0.2
-tensorflow==2.1.0
-pandas==0.25.2
-h5py==2.10.0
-numpy==1.16.2
 Keras==2.3.1
+pandas==0.25.2
+matplotlib==3.0.2
+h5py==2.10.0
+tensorflow==2.1.0
+numpy==1.16.2
 PyYAML==5.3.1
 scikit_learn==0.22.2.post1
