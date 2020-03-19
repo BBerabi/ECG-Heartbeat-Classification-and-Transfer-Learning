@@ -15,7 +15,6 @@ from tensorflow.keras.callbacks import ModelCheckpoint, EarlyStopping, ReduceLRO
 from tensorflow.keras.layers import Dense, BatchNormalization, Dropout
 
 import pandas as pd
-
 import os 
 import yaml 
 
@@ -27,7 +26,7 @@ args = parser.parse_args()
 
 path_yaml = args.yaml
 
-
+#Get paths dictionary 
 with open(path_yaml,'r') as f :
     paths = yaml.load(f, Loader=yaml.FullLoader)
 
@@ -35,7 +34,7 @@ with open(path_yaml,'r') as f :
 path_normal = os.path.join(paths["PTDB"]["Data"], "ptbdb_normal.csv")
 path_abnormal = os.path.join(paths["PTDB"]["Data"], "ptbdb_abnormal.csv")
 
-
+#Get data
 df_1 = pd.read_csv(path_normal, header=None)
 df_2 = pd.read_csv(path_abnormal, header=None)
 df = pd.concat([df_1, df_2])
@@ -44,7 +43,7 @@ df_train, df_test = train_test_split(df, test_size=0.2, random_state=1337, strat
 Y_test = np.array(df_test[187].values).astype(np.int8)
 X_test = np.array(df_test[list(range(187))].values)[..., np.newaxis]
 
-
+#Get models' paths and names 
 names = list(paths["PTDB"]["Models"].keys())
 names.extend(list(paths["Optionals"]["Optional_1"].keys()))
 names.extend(list(paths["Optionals"]["Optional_2"].keys()))
@@ -62,11 +61,12 @@ d = dict()
 
 for p in path :
     models.append(load_model(filepath=p))
-#print(models)
 
-
+#Get predictions for test dataset 
 for i in range(len(models)):
     #print("Getting scores of ",names[i])
+
+    #Get representations for optional 1 
     if "Optional1" in names[i] : 
         #print("Proceeding with optional 1 ")
 
@@ -97,10 +97,9 @@ for i in range(len(models)):
 
     aucroc = auc(fpr, tpr)
     aucprc = auc(recall, precision)
-
+    #Save accuracy, AUROC, AUPRC
     d[names[i]] = {"Accuracy":acc,"AUCROC":aucroc,"AUCPRC":aucprc}
-    #print(d)
-    #print("Done ",names[i])
+    
 
 
 d = pd.DataFrame(d)

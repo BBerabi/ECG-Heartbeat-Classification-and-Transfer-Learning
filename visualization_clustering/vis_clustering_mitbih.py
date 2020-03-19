@@ -10,7 +10,8 @@ from keras.models import load_model, Sequential
 
 
 import os 
-import yaml 
+import yaml
+#Get paths dictionary  
 with open("paths.yaml",'r') as f :
     paths = yaml.load(f, Loader=yaml.FullLoader)
 
@@ -18,10 +19,12 @@ path_mitbih = os.path.join(paths["MITBIH"]["Data"], "mitbih_train.csv")
 df_train = pd.read_csv(path_mitbih, header=None)
 df_train = df_train.sample(frac=1)
 
+#Load model 
 model = load_model(paths["Baseline"]["MITBIH"])
 
 Y = np.array(df_train[187].values).astype(np.int8)
 X = np.array(df_train[list(range(187))].values)[..., np.newaxis]
+
 
 representation_model = Sequential()
 for layer in model.layers[:-1]: # go through until last layer
@@ -31,9 +34,11 @@ representation_model.summary()
 path_mitbih = paths["Baseline"]["MITBIH_Representation"]
 
 if os.path.isfile(path_mitbih):
+    #Load the representations
     print('loading representations')
     embeddings = np.load(path_mitbih)
 else:
+    #Find the representations
     embeddings = representation_model.predict(X)
     np.save(path_mitbih, embeddings)
 
@@ -44,9 +49,11 @@ Y = Y[p]
 embeddings = embeddings[:N]
 Y = Y[:N]
 
+#Cluster representations
 clustering = KMeans(n_clusters=5, random_state=42).fit(embeddings)
 
 dimension = 2
+#Visualize with tSNE
 transformer = TSNE(n_components=dimension, random_state=11, method='barnes_hut')
 embeddings2d = transformer.fit_transform(embeddings)
 print("shape after embedding: ", embeddings2d.shape)

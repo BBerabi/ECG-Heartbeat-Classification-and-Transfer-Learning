@@ -11,13 +11,14 @@ import os
 import yaml 
 
 import argparse
+
 parser = argparse.ArgumentParser()
 parser.add_argument('--yaml',type=str)
 args = parser.parse_args()
 
 path_yaml = args.yaml
 
-
+#Get paths dictionary 
 with open(path_yaml,'r') as f :
     paths = yaml.load(f, Loader=yaml.FullLoader)
 
@@ -25,7 +26,7 @@ path_csv = "./models/ensemble/ENS_ptdb.csv"
 path_normal = os.path.join(paths["PTDB"]["Data"], "ptbdb_normal.csv")
 path_abnormal = os.path.join(paths["PTDB"]["Data"], "ptbdb_abnormal.csv")
 
-
+#Get data
 df_1 = pd.read_csv(path_normal, header=None)
 df_2 = pd.read_csv(path_abnormal, header=None)
 df = pd.concat([df_1, df_2])
@@ -34,7 +35,7 @@ df_train, df_test = train_test_split(df, test_size=0.2, random_state=1337, strat
 Y_test = np.array(df_test[187].values).astype(np.int8)
 X_test = np.array(df_test[list(range(187))].values)[..., np.newaxis]
 
-
+#Get names and paths of models to be ensembled 
 names = list(paths["PTDB"]["Models"].keys())
 paths = list(paths["PTDB"]["Models"].values())
 
@@ -48,11 +49,13 @@ for p in paths :
 
 probabilities = np.zeros((Y_test.shape[0],1))
 
+#Get predictions for test dataset 
 for m in models:
     probabilities += m.predict(X_test)
 probabilities /= len(models)
 predictions = (probabilities > 0.5).astype(np.int8)
 
+#Compute Accuracy, AUROC, AUPRC
 acc = accuracy_score(predictions, Y_test)
 precision, recall, thresholds = precision_recall_curve(Y_test,probabilities)
 fpr, tpr, thresholds = roc_curve(Y_test,probabilities,pos_label=1)

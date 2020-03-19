@@ -9,14 +9,17 @@ from keras.models import load_model, Sequential
 import yaml 
 import os 
 
+#Get paths dictionary 
 with open("paths.yaml",'r') as f :
     paths = yaml.load(f, Loader=yaml.FullLoader)
 
 path_normal = os.path.join(paths["PTDB"]["Data"], "ptbdb_normal.csv")
 path_abnormal = os.path.join(paths["PTDB"]["Data"], "ptbdb_abnormal.csv")
 
+#Load model 
 model = load_model(paths["Baseline"]["PTDB"])
 
+#Get data
 df_1 = pd.read_csv(path_normal, header=None)
 df_2 = pd.read_csv(path_abnormal, header=None)
 df = pd.concat([df_1, df_2])
@@ -35,9 +38,11 @@ representation_model.summary()
 path_ptdb = paths["Baseline"]["PTDB_Representation"]
 
 if os.path.isfile(path_ptdb):
+    #Load the representations
     print('loading representations')
     embeddings = np.load(path_ptdb)
 else:
+    #Find the representations
     embeddings = representation_model.predict(X)
     np.save(path_ptdb, embeddings)
 
@@ -48,9 +53,11 @@ Y = Y[p]
 embeddings = embeddings[:N]
 Y = Y[:N]
 
+#Cluster representations
 clustering = KMeans(n_clusters=2, random_state=42).fit(embeddings)
 
 dimension = 2
+#Visualize with tSNE
 transformer = TSNE(n_components=dimension, random_state=11, method='barnes_hut')
 embeddings2d = transformer.fit_transform(embeddings)
 print("shape after embedding: ", embeddings2d.shape)

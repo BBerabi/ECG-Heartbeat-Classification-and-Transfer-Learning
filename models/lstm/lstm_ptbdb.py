@@ -1,7 +1,7 @@
 import numpy as np
 from numpy.random import seed
 from sklearn.model_selection import train_test_split
-
+#Add seed for reproducibility
 seed(1)
 import tensorflow as tf
 tf.random.set_seed(2)
@@ -20,6 +20,7 @@ import os
 import yaml
 import argparse 
 
+#Get paths dictionary 
 with open("paths.yaml",'r') as f :
     paths = yaml.load(f, Loader=yaml.FullLoader)
 
@@ -29,7 +30,7 @@ args = parser.parse_args()
 nr_epoch = args.epoch
 
 
-
+#Get data
 df_1 = pd.read_csv("./data/ptbdb_normal.csv", header=None)
 df_2 = pd.read_csv("./data/ptbdb_abnormal.csv", header=None)
 df = pd.concat([df_1, df_2])
@@ -50,7 +51,7 @@ X_test = np.reshape(X_test, (len(X_test), 187, 1))
 
 
 
-
+#Define model 
 def get_model():
     model = Sequential()
     model.add(LSTM(64, input_shape=(187, 1), return_sequences=True))
@@ -83,11 +84,13 @@ def get_model():
     return model
 
 
-
+#Configure model 
 model = get_model()
 opt = RMSprop(lr=0.001)
-
+#Create string for path to save the model 
 path_model = os.path.join(os.path.dirname(paths['PTDB']['Models']['LSTM']),'LSTM_ptdb.h5')
+
+#Define callbacks
 check = ModelCheckpoint(path_model, monitor='val_acc', save_best_only=True, mode='max', verbose=2)
 early = EarlyStopping(monitor='val_acc', mode='max', patience=10, verbose=2)
 reduce_lr = ReduceLROnPlateau(monitor='val_acc', factor=0.2, patience=3, verbose=2)
@@ -95,12 +98,11 @@ reduce_lr = ReduceLROnPlateau(monitor='val_acc', factor=0.2, patience=3, verbose
 model.compile(loss='binary_crossentropy', optimizer=opt, metrics=['acc'])
 model.fit(X, Y, epochs=nr_epoch, batch_size=64, callbacks=[check, early, reduce_lr], validation_split=0.1)
 
+#Get predictions for test dataset 
 predictions = model.predict(X_test)
 predictions = (predictions > 0.5).astype(np.int8)
 
-
-
-
+#Compute Accuracy 
 acc = accuracy_score(predictions, Y_test)
 print("Test accuracy score : %s "% acc)
 

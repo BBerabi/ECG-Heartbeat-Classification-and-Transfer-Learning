@@ -16,14 +16,14 @@ args = parser.parse_args()
 
 path_yaml = args.yaml
 
-
+#Get paths dictionary 
 with open(path_yaml,'r') as f :
     paths = yaml.load(f, Loader=yaml.FullLoader)
 
 path_csv = "./models/ensemble/ENS2_mitbih.csv"
 path_test = os.path.join(paths["MITBIH"]["Data"], "mitbih_test.csv")
 
-
+#Get data
 df_test = pd.read_csv(path_test, header=None)
 Y_test = np.array(df_test[187].values).astype(np.int8)
 Y = Y_test
@@ -32,11 +32,11 @@ Y_test = np_utils.to_categorical(Y_test)
 X_test = np.array(df_test[list(range(187))].values)[..., np.newaxis]
 del df_test
 
+#Get names and paths of models to be ensembled 
 names = ["BRNN","CNN_LSTM","CNN_Res","GRU","Inception"]
 
 paths = [paths["MITBIH"]["Models"][n] for n in names ] 
-#print("NAMES ",names)
-#print(paths)
+
 
 models = []
 
@@ -46,11 +46,13 @@ for p in paths :
 
 predictions = np.zeros(Y_test.shape)
 
+#Get predictions for test dataset 
 for m in models:
     predictions += m.predict(X_test)
 predictions /= len(models)
 predictions = np.argmax(predictions, axis=-1)
 
+#Compute Accuracy 
 acc = accuracy_score(predictions, Y)
 
 print("=====ENSEMBLE MODEL=====")

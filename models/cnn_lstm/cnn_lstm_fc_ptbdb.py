@@ -1,5 +1,8 @@
 import pandas as pd
 import numpy as np
+from numpy.random import seed
+#Add seed for reproducibility
+seed(1)
 import tensorflow as tf
 tf.random.set_seed(2)
 
@@ -22,7 +25,7 @@ parser.add_argument('--epoch',default=100,type=int)
 args = parser.parse_args()
 nr_epoch = args.epoch
 
-
+#Get data
 df_1 = pd.read_csv("./data/ptbdb_normal.csv", header=None)
 df_2 = pd.read_csv("./data/ptbdb_abnormal.csv", header=None)
 df = pd.concat([df_1, df_2])
@@ -37,7 +40,7 @@ Y_test = np.array(df_test[187].values).astype(np.int8)
 X_test = np.array(df_test[list(range(187))].values)[..., np.newaxis]
 
 
-
+#Define model 
 def get_model():
     number_labels = 1
     inp = Input(shape=(187, 1))
@@ -66,19 +69,23 @@ def get_model():
     model.summary()
     return model
 
-
+#Configure model 
 model = get_model()
 
+#Create string for path to save the model 
 path_model = os.path.join(os.path.dirname(paths['PTDB']['Models']['CNN_LSTM']),'CNN_LSTM_ptdb.h5')
 
+#Define callbacks
 checkpoint = ModelCheckpoint(path_model, monitor='val_acc', verbose=1, save_best_only=True, mode='max')
 early = EarlyStopping(monitor="val_acc", mode="max", patience=5, verbose=1)
 redonplat = ReduceLROnPlateau(monitor="val_acc", mode="max", patience=3, verbose=2)
 
 model.fit(X, Y, epochs=nr_epoch, verbose=2, callbacks=[checkpoint, early, redonplat], validation_split=0.1)
 
+#Get predictions for test dataset 
 pred_test = model.predict(X_test)
 pred_test = (pred_test>0.5).astype(np.int8)
 
+#Compute Accuracy 
 acc = accuracy_score(Y_test, pred_test)
 print("Test accuracy score : %s "% acc)

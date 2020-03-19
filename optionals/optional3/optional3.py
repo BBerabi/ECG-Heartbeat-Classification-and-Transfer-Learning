@@ -1,6 +1,9 @@
 
 import pandas as pd
 import numpy as np
+#Add seed for reproducibility
+from numpy.random import seed
+seed(1)
 import tensorflow as tf
 tf.random.set_seed(2)
 
@@ -17,10 +20,12 @@ print('----------------------------------------------')
 
 import os 
 import yaml 
+
+#Get paths dictionary 
 with open("new_paths.yaml",'r') as f :
     paths = yaml.load(f, Loader=yaml.FullLoader)
-
 import argparse 
+
 parser = argparse.ArgumentParser()
 parser.add_argument('--model',type=str)
 parser.add_argument('--epoch',default=100,type=int)
@@ -36,7 +41,7 @@ base_model.summary()
 path_normal = os.path.join(paths["PTDB"]["Data"], "ptbdb_normal.csv")
 path_abnormal = os.path.join(paths["PTDB"]["Data"], "ptbdb_abnormal.csv")
 
-
+#Get data
 df_1 = pd.read_csv(path_normal, header=None)
 df_2 = pd.read_csv(path_abnormal, header=None)
 df = pd.concat([df_1, df_2])
@@ -56,7 +61,7 @@ for layer in base_model.layers[:-3]: # go through until last lstm layer
     model.add(layer)
 model.summary()
 
-#
+
 # Add new output layers for ptbdb
 model.add(Dense(units=64, activation='relu'))
 model.add(BatchNormalization())
@@ -73,6 +78,7 @@ model.add(Dense(1, activation='sigmoid'))
 for layer in model.layers[:3]:
     layer.trainable = False
 
+#Configure model 
 opt = Adam(lr=0.001)
 model.compile(loss='binary_crossentropy', metrics=['acc'], optimizer=opt)
 
@@ -80,10 +86,12 @@ print("Model Summary after adding fc layers and freezing layers from base model"
 model.summary()
 
 # Now train the output layers
+#Create string for path to save the model 
 file_name = "OPT3_"+args.model+".h5"
 path_model = os.path.join(os.path.dirname(paths['Optionals']['Optional_3']['Optional3_RNN']),file_name)
 
 print("Best model will be saved in ",file_name)
+#Define callbacks
 checkpoint = ModelCheckpoint(path_model, monitor='val_acc', verbose=1, save_best_only=True, mode='max')
 early = EarlyStopping(monitor="val_acc", mode="max", patience=10, verbose=1)
 redonplat = ReduceLROnPlateau(monitor="val_acc", mode="max", patience=7, verbose=2, factor=0.5)
@@ -91,9 +99,11 @@ redonplat = ReduceLROnPlateau(monitor="val_acc", mode="max", patience=7, verbose
 model.fit(X, Y, epochs=nr_epoch, verbose=2, callbacks=[checkpoint, early, redonplat], validation_split=0.1,
           batch_size=64)
 
+#Get predictions for test dataset 
 pred_test = model.predict(X_test)
 pred_test = (pred_test>0.5).astype(np.int8)
 
+#Compute Accuracy 
 acc = accuracy_score(Y_test, pred_test)
 print("Test accuracy score with frozen first layers : %s "% acc)
 
@@ -109,9 +119,10 @@ model.summary()
 
 model.fit(X, Y, epochs=nr_epoch, verbose=2, callbacks=[checkpoint, early, redonplat], validation_split=0.1,
           batch_size=64)
+#Get predictions for test dataset  
 pred_test = model.predict(X_test)
 pred_test = (pred_test>0.5).astype(np.int8)
-
+#Compute Accuracy 
 acc = accuracy_score(Y_test, pred_test)
 print("Test accuracy score after unfreezing and training whole model: %s "% acc)
 

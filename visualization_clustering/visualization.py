@@ -4,6 +4,7 @@ from matplotlib import pyplot as plt
 from random import randint
 import os 
 import yaml
+#Get paths dictionary 
 with open("paths.yaml",'r') as f :
     paths = yaml.load(f, Loader=yaml.FullLoader)
 
@@ -14,7 +15,7 @@ def plot_mean_signals_and_one_random(data):
     labels = data[:number_of_samples, -1]
     number_of_labels = np.unique(labels).shape[0]
     data = data[:, :number_of_features - 1]
-
+    #Compute mean of signals for every class 
     mean_signals = []
     for label in range(number_of_labels):
         indices = np.where(labels == label)[0]
@@ -42,7 +43,7 @@ def plot_mean_signals_and_one_random(data):
 
 path_normal = os.path.join(paths["PTDB"]["Data"], "ptbdb_normal.csv")
 path_abnormal = os.path.join(paths["PTDB"]["Data"], "ptbdb_abnormal.csv")
-
+#Get data
 data_normal = pd.read_csv(path_normal).values
 data_abnormal = pd.read_csv(path_abnormal).values
 data_train = np.concatenate((data_normal, data_abnormal), axis=0)

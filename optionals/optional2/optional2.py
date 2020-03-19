@@ -1,6 +1,9 @@
 
 import pandas as pd
 import numpy as np
+#Add seed for reproducibility
+from numpy.random import seed
+seed(1)
 import tensorflow as tf
 tf.random.set_seed(2)
 
@@ -12,11 +15,10 @@ from keras.models import load_model
 from keras.optimizers import Adam, RMSprop
 from sklearn.metrics import accuracy_score
 from sklearn.model_selection import train_test_split
-
-
-
 import os 
 import yaml 
+
+#Get paths dictionary 
 with open("new_paths.yaml",'r') as f :
     paths = yaml.load(f, Loader=yaml.FullLoader)
 
@@ -57,6 +59,7 @@ for layer in base_model.layers[:-3]: # go through until last lstm layer
     model.add(layer)
 model.summary()
 
+#Define model 
 # Add new output layers for ptbdb
 model.add(Dense(units=64, activation='relu'))
 model.add(BatchNormalization())
@@ -71,9 +74,11 @@ model.add(Dense(1, activation='sigmoid'))
 
 model.summary()
 
+#Configure model 
 opt = Adam(lr=0.001)
 model.compile(loss='binary_crossentropy', metrics=['acc'], optimizer=opt)
 
+#Create string for path to save the model 
 file_name = "OPT2_"+args.model+".h5"
 path_model = os.path.join(os.path.dirname(paths['Optionals']['Optional_2']['Optional2_RNN']),file_name)
 
@@ -85,8 +90,10 @@ redonplat = ReduceLROnPlateau(monitor="val_acc", mode="max", patience=7, verbose
 model.fit(X, Y, epochs=nr_epoch, verbose=2, callbacks=[checkpoint, early, redonplat], validation_split=0.1,
           batch_size=64)
 
+#Get predictions for test dataset 
 pred_test = model.predict(X_test)
 pred_test = (pred_test>0.5).astype(np.int8)
 
+#Compute Accuracy 
 acc = accuracy_score(Y_test, pred_test)
 print("Test accuracy score : %s "% acc)
