@@ -15,6 +15,8 @@ parser = argparse.ArgumentParser()
 parser.add_argument('--yaml',type=str)
 args = parser.parse_args()
 path_yaml = args.yaml
+print(path_yaml)
+print(type(path_yaml))
 
 with open(path_yaml,'r') as f :
     paths = yaml.load(f, Loader=yaml.FullLoader)
@@ -33,7 +35,7 @@ X_test = np.array(df_test[list(range(187))].values)[..., np.newaxis]
 del df_test
 
 names = list(paths["MITBIH"]["Models"].keys())
-paths = list(paths["MITBIH"]["Models"].values())
+path = list(paths["MITBIH"]["Models"].values())
 
 models = []
 accs = []
@@ -41,8 +43,11 @@ d = dict()
 
 
 #Get models 
-for p in paths :
-    models.append(load_model(filepath=p))
+for i in range(len(path)) :
+    print(path[i])
+    models.append(load_model(filepath=path[i]))
+    print(names[i]," done")
+
 
 #Get predictions for test dataset for every model 
 for i in range(len(models)):

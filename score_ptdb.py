@@ -59,8 +59,11 @@ path.extend(list(paths["Optionals"]["Optional_3"].values()))
 models = []
 d = dict()
 
-for p in path :
-    models.append(load_model(filepath=p))
+for i in range(len(path)) :
+    print(path[i])
+    models.append(load_model(filepath=path[i]))
+    print(names[i]," done")
+
 
 #Get predictions for test dataset 
 for i in range(len(models)):
